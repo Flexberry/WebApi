@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.21005.1
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29009.5
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{A9836F9E-6DB3-4D9F-ADCA-CF42D8C8BA93}"
 EndProject
@@ -16,6 +16,11 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "System.Web.Http.OData.Test", "test\UnitTest\System.Web.Http.OData.Test\System.Web.Http.OData.Test.csproj", "{D344485F-F8CA-4B02-AF3D-D9C6FD556CA9}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "System.Web.OData.Test", "test\UnitTest\System.Web.OData.Test\System.Web.OData.Test.csproj", "{66EFD03D-95B7-4C7E-83AC-1A8BD6C12612}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "nuspec", "nuspec", "{83CEAC4D-0F52-4AC7-A4FD-EC7678C4E7C7}"
+	ProjectSection(SolutionItems) = preProject
+		..\Microsoft.AspNet.OData.nuspec = ..\Microsoft.AspNet.OData.nuspec
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -64,5 +69,8 @@ Global
 		{FCCC4CB7-BAF7-4A57-9F89-E5766FE536C0} = {C40883CD-366D-4534-8B58-3EA0D13136DF}
 		{D344485F-F8CA-4B02-AF3D-D9C6FD556CA9} = {C40883CD-366D-4534-8B58-3EA0D13136DF}
 		{66EFD03D-95B7-4C7E-83AC-1A8BD6C12612} = {C40883CD-366D-4534-8B58-3EA0D13136DF}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {387C2D7C-7777-44AB-AF16-FC32F25CD0DE}
 	EndGlobalSection
 EndGlobal
