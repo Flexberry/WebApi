@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
   <metadata>
     <id>Microsoft.AspNet.OData-Debug</id>
-    <version>5.7.0</version>
+    <version>5.7.1</version>
     <title>Microsoft ASP.NET Web API 2.2 for OData v4.0</title>
     <authors>Microsoft</authors>
     <owners>Microsoft,aspnet,OData</owners>
@@ -18,7 +18,7 @@
     <dependencies>
       <dependency id="Microsoft.AspNet.WebApi.Client" version="5.2.2" />
       <dependency id="Microsoft.AspNet.WebApi.Core" version="[5.2.2, 5.3.0)" />
-      <dependency id="Microsoft.OData.Core-Debug" version="[6.13.0, 7.0.0)" />
+      <dependency id="Microsoft.OData.Core-Debug" version="[6.15.1, 7.0.0)" />
     </dependencies>
     <frameworkAssemblies>
       <frameworkAssembly assemblyName="System.Net.Http" targetFramework=".NETFramework4.5" />
