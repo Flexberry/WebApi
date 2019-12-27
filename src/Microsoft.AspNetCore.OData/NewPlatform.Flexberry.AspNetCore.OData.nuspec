@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package>
+  <metadata>
+    <id>NewPlatform.Flexberry.AspNetCore.OData</id>
+    <title>NewPlatform and Microsoft ASP.NET Core 2.0 for OData v4.0</title>
+    <version>7.1.0-beta01</version>
+    <authors>Microsoft, New Platform</authors>
+    <copyright>&#169; Microsoft Corporation, NewPlatform Ltd. All rights reserved. </copyright>
+    <description>This package contains everything you need to create OData v4.0 endpoints using ASP.NET Core MVC and to support OData query syntax for your web APIs.</description>
+    <summary>This package contains everything you need to create OData v4.0 endpoints using ASP.NET Core MVC.</summary>
+    <language>en-US</language>
+    <projectUrl>https://github.com/Flexberry/WebApi</projectUrl>
+    <licenseUrl>https://raw.githubusercontent.com/Flexberry/WebApi/master/License.txt</licenseUrl>
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
+    <tags>Flexberry Microsoft AspNetCore WebApi OData</tags>
+    <iconUrl>https://flexberry.net/img/logo-color.png</iconUrl>
+    <dependencies>
+      <group targetFramework=".NETStandard2.0">
+        <dependency id="Microsoft.AspNetCore.Mvc.Core" version="2.0.0" />
+        <dependency id="Microsoft.Extensions.DependencyInjection" version="2.0.0" />
+        <dependency id="Microsoft.OData.Core" version="7.5.0" />
+      </group>
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="\netstandard2.0\Microsoft.AspNetCore.OData.dll" target="lib\netstandard2.0" />
+    <file src="\netstandard2.0\Microsoft.AspNetCore.OData.pdb" target="lib\netstandard2.0" />
+    <file src="\netstandard2.0\Microsoft.AspNetCore.OData.xml" target="lib\netstandard2.0" />
+  </files>
+</package>
