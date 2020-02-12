@@ -20,7 +20,7 @@
       <dependency id="Microsoft.AspNet.WebApi.Core" version="[5.2.2, 5.3.0)" />
       <dependency id="Microsoft.Extensions.DependencyInjection.Abstractions" version="1.0.0" />
       <dependency id="Microsoft.Extensions.DependencyInjection" version="1.0.0" />
-      <dependency id="Microsoft.OData.Core-Debug" version="[7.5.0, 8.0.0)" />
+      <dependency id="Microsoft.OData.Core-Debug" version="[7.5.0-beta01, 8.0.0)" />
     </dependencies>
     <frameworkAssemblies>
       <frameworkAssembly assemblyName="System.Net.Http" targetFramework=".NETFramework4.5" />
