@@ -259,6 +259,30 @@ namespace Microsoft.AspNet.OData.Test
         }
 
         [Fact]
+        public async Task SelectExpand_WithNullComplexProperty()
+        {
+            // Arrange
+            var uri = "/odata/SelectExpandTestCustomers?$select=ID,Address";
+
+            // Act
+            var response = await GetResponse(uri, AcceptJson);
+
+            // Assert
+            response.EnsureSuccessStatusCode();
+            var content = await response.Content.ReadAsStringAsync();
+            SelectExpandTestCustomer[] customers = JObject.Parse(content).GetValue("value").ToObject<SelectExpandTestCustomer[]>();
+            Assert.NotNull(customers);
+            Assert.Equal(3, customers.Length);
+
+            for (int i = 0; i < 3; i++)
+            {
+                SelectExpandTestCustomer customer = customers[i];
+                Assert.Equal(42 + i, customer.ID);
+                Assert.Null(customer.Address);
+            }
+        }
+
+        [Fact]
         public async Task SelectExpand_QueryableOnSingleEntity_Works()
         {
             // Arrange
@@ -353,6 +377,22 @@ namespace Microsoft.AspNet.OData.Test
             Assert.Equal(5, result["value"].Count());
         }
 
+        [Fact]
+        public async Task SelectExpand_Works_ForSelectCaseSensitivityProperties()
+        {
+            // Arrange
+            const string URI = "/odata2/Players?$select=Title,TITLE";
+
+            // Act
+            HttpResponseMessage response = await GetResponse(URI, AcceptJsonFullMetadata);
+            string responseString = await response.Content.ReadAsStringAsync();
+
+            // Assert
+            Assert.True(response.IsSuccessStatusCode);
+            JObject result = JObject.Parse(responseString);
+            Assert.Equal(5, result["value"].Count());
+        }
+
         [Theory]
         [InlineData("Default.Container.*")]
         [InlineData("Container.*")]
@@ -368,7 +408,7 @@ namespace Microsoft.AspNet.OData.Test
             // Assert
             Assert.False(response.IsSuccessStatusCode);
             Assert.Contains("The query specified in the URI is not valid. " +
-                "A path within the select or expand query option is not supported.",
+                String.Format("Can not resolve the segment identifier '{0}' in query option.", nonNamespaceQualifiedName),
                 responseString);
         }
 
@@ -407,7 +447,7 @@ namespace Microsoft.AspNet.OData.Test
                 config.Routes.MapHttpRoute("api", "api/{controller}", new { controller = "NonODataSelectExpandTestCustomers" });
 #endif
                 config.EnableDependencyInjection();
-                });
+            });
 
             HttpClient client = TestServerFactory.CreateClient(server);
             HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, "http://localhost" + uri);
@@ -553,6 +593,8 @@ namespace Microsoft.AspNet.OData.Test
             }
         }
 
+        public SelectExpandTestCustomerAddress Address { get; set; }
+
         public int ID { get; set; }
 
         public string Name { get; set; }
@@ -560,6 +602,11 @@ namespace Microsoft.AspNet.OData.Test
         public SelectExpandTestOrder[] Orders { get; set; }
 
         public SelectExpandTestCustomer PreviousCustomer { get; set; }
+    }
+
+    public class SelectExpandTestCustomerAddress
+    {
+        public string City { get; set; }
     }
 
     public class SelectExpandTestSpecialCustomer : SelectExpandTestCustomer
@@ -778,7 +825,9 @@ namespace Microsoft.AspNet.OData.Test
                         Id = i,
                         Name = "PayerName " + i,
                         Category = "Category " + i,
-                        Address = "Address " + i
+                        Address = "Address " + i,
+                        Title = "Title" + i,
+                        TITLE = "TITLE" + i
                     }).ToList();
 
         [EnableQuery]
@@ -794,5 +843,7 @@ namespace Microsoft.AspNet.OData.Test
         public string Name { get; set; }
         public string Category { get; set; }
         public string Address { get; set; }
+        public string Title { get; set; }
+        public string TITLE { get; set; }
     }
 }

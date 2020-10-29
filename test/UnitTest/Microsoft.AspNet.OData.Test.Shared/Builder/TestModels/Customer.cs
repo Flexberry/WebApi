@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using Microsoft.AspNet.OData.Builder;
 
 namespace Microsoft.AspNet.OData.Test.Builder.TestModels
 {
@@ -16,9 +17,12 @@ namespace Microsoft.AspNet.OData.Test.Builder.TestModels
         public string Website { get; set; }
         public string ShareSymbol { get; set; }
         public Decimal? SharePrice { get; set; }
+        public Company Company { get; set; }
         public List<Order> Orders { get; set; }
         public List<string> Aliases { get; set; }
         public List<Address> Addresses { get; set; }
         public Dictionary<string, object> DynamicProperties { get; set; }
-    }
+        public DateTimeOffset? StartDate { get; set; }
+        public IODataInstanceAnnotationContainer InstanceAnnotations { get; set; }
+    }     
 }

@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Net.Http.Headers;
 using System.Runtime.Serialization;
@@ -138,8 +139,7 @@ namespace Microsoft.AspNet.OData.Formatter
                 annotationFilter = messageWrapper.PreferHeader().AnnotationFilter;
             }
 
-            ODataMessageWrapper responseMessageWrapper = getODataMessageWrapper(internalRequest.RequestContainer);
-            IODataResponseMessage responseMessage = responseMessageWrapper;
+            IODataResponseMessage responseMessage = getODataMessageWrapper(internalRequest.RequestContainer);
             if (annotationFilter != null)
             {
                 responseMessage.PreferenceAppliedHeader().AnnotationFilter = annotationFilter;
@@ -175,10 +175,9 @@ namespace Microsoft.AspNet.OData.Formatter
             {
                 ServiceRoot = baseAddress,
 
-                // TODO: 1604 Convert webapi.odata's ODataPath to ODL's ODataPath, or use ODL's ODataPath.
                 SelectAndExpand = internalRequest.Context.ProcessedSelectExpandClause,
                 Apply = internalRequest.Context.ApplyClause,
-                Path = (path == null || IsOperationPath(path)) ? null : path.Path,
+                Path = ConvertPath(path),
             };
 
             ODataMetadataLevel metadataLevel = ODataMetadataLevel.MinimalMetadata;
@@ -200,7 +199,7 @@ namespace Microsoft.AspNet.OData.Formatter
                 writeContext.MetadataLevel = metadataLevel;
                 writeContext.QueryOptions = internalRequest.Context.QueryOptions;
 
-                //Set the SelectExpandClause on the context if it was explicitly specified. 
+                //Set the SelectExpandClause on the context if it was explicitly specified.
                 if (selectExpandDifferentFromQueryOptions != null)
                 {
                     writeContext.SelectExpandClause = selectExpandDifferentFromQueryOptions;
@@ -349,6 +348,65 @@ namespace Microsoft.AspNet.OData.Formatter
             }
 
             return false;
+        }
+
+        private static Microsoft.OData.UriParser.ODataPath ConvertPath(ODataPath path)
+        {
+            if (path == null)
+            {
+                return null;
+            }
+
+            if (IsOperationPath(path))
+            {
+                var lastSegment = path.Segments.Last();
+                OperationSegment operation = lastSegment as OperationSegment;
+                if (operation != null && operation.EntitySet != null)
+                {
+                    return GeneratePath(operation.EntitySet);
+                }
+
+                OperationImportSegment operationImport = lastSegment as OperationImportSegment;
+                if (operationImport != null && operationImport.EntitySet != null)
+                {
+                    return GeneratePath(operationImport.EntitySet);
+                }
+
+                return null;
+            }
+
+            return path.Path;
+        }
+
+        private static Microsoft.OData.UriParser.ODataPath GeneratePath(IEdmNavigationSource navigationSource)
+        {
+            Contract.Assert(navigationSource != null);
+
+            switch (navigationSource.NavigationSourceKind())
+            {
+                case EdmNavigationSourceKind.EntitySet:
+                    return new Microsoft.OData.UriParser.ODataPath(new EntitySetSegment((IEdmEntitySet)navigationSource));
+
+                case EdmNavigationSourceKind.Singleton:
+                    return new Microsoft.OData.UriParser.ODataPath(new SingletonSegment((IEdmSingleton)navigationSource));
+
+                case EdmNavigationSourceKind.ContainedEntitySet:
+                    IEdmContainedEntitySet containedEntitySet = (IEdmContainedEntitySet)navigationSource;
+                    Microsoft.OData.UriParser.ODataPath path = GeneratePath(containedEntitySet.ParentNavigationSource);
+                    IList<ODataPathSegment> segments = new List<ODataPathSegment>();
+                    foreach (var item in path)
+                    {
+                        segments.Add(item);
+                    }
+
+                    segments.Add(new NavigationPropertySegment(containedEntitySet.NavigationProperty, containedEntitySet.ParentNavigationSource));
+                    return new Microsoft.OData.UriParser.ODataPath(segments);
+
+                case EdmNavigationSourceKind.None:
+                case EdmNavigationSourceKind.UnknownEntitySet:
+                default:
+                    return null;
+            }
         }
     }
 }

@@ -11,6 +11,7 @@ using System.Net.Http.Headers;
 using Microsoft.AspNet.OData.Common;
 using Microsoft.AspNet.OData.Formatter;
 using Microsoft.AspNet.OData.Interfaces;
+using Microsoft.AspNet.OData.Query;
 using Microsoft.AspNet.OData.Routing;
 using Microsoft.AspNet.OData.Routing.Conventions;
 using Microsoft.AspNetCore.Http;
@@ -293,23 +294,37 @@ namespace Microsoft.AspNet.OData.Extensions
                 uriBuilder.Port = request.Host.Port.Value;
             }
 
+            CompatibilityOptions compatibilityOptions = request.GetCompatibilityOptions();
+
             IEnumerable<KeyValuePair<string, string>> queryParameters = request.Query.SelectMany(kvp => kvp.Value, (kvp, value) => new KeyValuePair<string, string>(kvp.Key, value));
-            return GetNextPageHelper.GetNextPageLink(uriBuilder.Uri, queryParameters, pageSize, instance, objectToSkipTokenValue);
+            return GetNextPageHelper.GetNextPageLink(uriBuilder.Uri, queryParameters, pageSize, instance, objectToSkipTokenValue, compatibilityOptions);
         }
 
         /// <summary>
-        /// Retrieves the Content-ID to Location mapping associated with the request.
+        /// Gets the set of flags for <see cref="CompatibilityOptions"/> from ODataOptions. 
         /// </summary>
         /// <param name="request">The request.</param>
-        /// <returns>The Content-ID to Location mapping associated with this request, or <c>null</c> if there isn't one.</returns>
-        public static IDictionary<string, string> GetODataContentIdMapping(this HttpRequest request)
+        /// <returns>Set of flags for <see cref="CompatibilityOptions"/> from ODataOptions.</returns>
+        internal static CompatibilityOptions GetCompatibilityOptions(this HttpRequest request)
         {
             if (request == null)
             {
                 throw Error.ArgumentNull("request");
             }
 
-            return null;
+            if (request.HttpContext == null)
+            {
+                return CompatibilityOptions.None;
+            }
+
+            ODataOptions options = request.HttpContext.RequestServices.GetRequiredService<ODataOptions>();
+
+            if (options == null)
+            {
+                return CompatibilityOptions.None;
+            }
+
+            return options.CompatibilityOptions;
         }
 
         internal static ODataVersion? ODataServiceVersion(this HttpRequest request)
@@ -435,6 +450,52 @@ namespace Microsoft.AspNet.OData.Extensions
                     requestScope.Dispose();
                 }
             }
+        }
+
+        /// <summary>
+        /// Checks whether the request is a POST targeted at a resource path ending in /$query.
+        /// </summary>
+        /// <param name="request">The request.</param>
+        /// <param name="oDataPath">The OData path.</param>
+        /// <returns>true if the request path has $query segment.</returns>
+        internal static bool IsQueryRequest(this HttpRequest request, string oDataPath)
+        {
+            return request.Method.Equals(HttpMethods.Post) && 
+                oDataPath?.TrimEnd('/').EndsWith('/' + ODataRouteConstants.QuerySegment, StringComparison.OrdinalIgnoreCase) == true;
+        }
+
+        /// <summary>
+        /// Transforms a POST request targeted at a resource path ending in $query into a GET request. 
+        /// The query options are parsed from the request body and appended to the request URL.
+        /// </summary>
+        /// <param name="request">The request.</param>
+        internal static void TransformQueryRequest(this HttpRequest request)
+        {
+            // Fetch parser capable of parsing the query options in the request body
+            IODataQueryOptionsParser queryOptionsParser = ODataQueryOptionsParserFactory.GetQueryOptionsParser(request);
+            // Parse query options in request body
+            string queryOptions = queryOptionsParser.ParseAsync(request.Body).Result;
+
+            string requestPath = request.Path.Value;
+            string queryString = request.QueryString.Value;
+
+            // Strip off the /$query part
+            requestPath = requestPath.Substring(0, requestPath.LastIndexOf('/' + ODataRouteConstants.QuerySegment, StringComparison.OrdinalIgnoreCase));
+            if (!string.IsNullOrWhiteSpace(queryOptions))
+            {
+                if (string.IsNullOrWhiteSpace(queryString))
+                {
+                    queryString = '?' + queryOptions;
+                }
+                else
+                {
+                    queryString += '&' + queryOptions;
+                }
+            }
+
+            request.Path = new PathString(requestPath);
+            request.QueryString = new QueryString(queryString);
+            request.Method = HttpMethods.Get;
         }
 
         /// <summary>
