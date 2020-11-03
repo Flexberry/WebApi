@@ -28,10 +28,10 @@
   </metadata>
   <files>
 
-    <file src="src\Microsoft.AspNetCore.OData\bin\$configuration$\netstandard2.0\Microsoft.AspNetCore.OData.dll" target="lib\netstandard2.0\Microsoft.AspNetCore.OData.dll" />
-    <file src="src\Microsoft.AspNetCore.OData\bin\$configuration$\netstandard2.0\Microsoft.AspNetCore.OData.xml" target="lib\netstandard2.0\Microsoft.AspNetCore.OData.xml" />
-    <file src="src\Microsoft.AspNetCore.OData\bin\$configuration$\netcoreapp3.1\Microsoft.AspNetCore.OData.dll" target="lib\netcoreapp3.1\Microsoft.AspNetCore.OData.dll" />
-    <file src="src\Microsoft.AspNetCore.OData\bin\$configuration$\netcoreapp3.1\Microsoft.AspNetCore.OData.xml" target="lib\netcoreapp3.1\Microsoft.AspNetCore.OData.xml" />
+    <file src="bin\$configuration$\netstandard2.0\Microsoft.AspNetCore.OData.dll" target="lib\netstandard2.0\Microsoft.AspNetCore.OData.dll" />
+    <file src="bin\$configuration$\netstandard2.0\Microsoft.AspNetCore.OData.xml" target="lib\netstandard2.0\Microsoft.AspNetCore.OData.xml" />
+    <file src="bin\$configuration$\netcoreapp3.1\Microsoft.AspNetCore.OData.dll" target="lib\netcoreapp3.1\Microsoft.AspNetCore.OData.dll" />
+    <file src="bin\$configuration$\netcoreapp3.1\Microsoft.AspNetCore.OData.xml" target="lib\netcoreapp3.1\Microsoft.AspNetCore.OData.xml" />
 
   </files>
 </package>
