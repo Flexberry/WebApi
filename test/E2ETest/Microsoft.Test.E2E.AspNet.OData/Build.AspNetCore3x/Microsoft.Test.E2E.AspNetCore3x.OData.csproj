@@ -27,7 +27,7 @@
     <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="3.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.2.5" />
-    <PackageReference Include="Microsoft.OData.Client" Version="7.7.1" />
+    <PackageReference Include="Microsoft.OData.Client" Version="7.7.3" />
     <PackageReference Include="System.Reflection" Version="4.3.0" />
     <PackageReference Include="System.Runtime.Extensions" Version="4.3.1" />
     <PackageReference Include="System.Diagnostics.EventLog" Version="4.7.0" />
@@ -39,7 +39,6 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="2.2.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="2.2.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="2.2.0" />
-    <PackageReference Include="System.Text.Json" Version="4.7.1" />
   </ItemGroup>
 
   <ItemGroup>
@@ -1551,6 +1550,15 @@
     </Compile>
     <Compile Include="..\Routing\UnqualifiedNameCallRoutingTests.cs">
       <Link>Routing\UnqualifiedNameCallRoutingTests.cs</Link>
+    </Compile>
+    <Compile Include="..\ServerSidePaging\ServerSidePagingControllers.cs">
+      <Link>ServerSidePaging\ServerSidePagingControllers.cs</Link>
+    </Compile>
+    <Compile Include="..\ServerSidePaging\ServerSidePagingDataModel.cs">
+      <Link>ServerSidePaging\ServerSidePagingDataModel.cs</Link>
+    </Compile>
+    <Compile Include="..\ServerSidePaging\ServerSidePagingTests.cs">
+      <Link>ServerSidePaging\ServerSidePagingTests.cs</Link>
     </Compile>
     <Compile Include="..\SingleResult\SingleResultController.cs">
       <Link>SingleResult\SingleResultController.cs</Link>
